@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load rest_framework %}
+{% block content %}
+<div class="container">
+    <h1 class="lead">Contact</h1>
+    {% if error %}
+    <div class="alert alert-danger">
+        <a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <p>{{ error }}</p>
+    </div>
+    {% endif %}
+    <div class="alert alert-danger" hidden="hidden" id="div_error">
+        <a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <p id="error"></p>
+    </div>
+    <form action="{% url 'contact' %}" method="post" onsubmit="return validateForm();">
+        {% render_form serializer %}
+        <input type="submit" class="btn btn-default" value="Submit">
+    </form>
+</div>
+<script type = "text/javascript">
+    function validateForm(){
+        div = document.getElementById('div_error');
+        p = document.getElementById('error');
+        var name = document.getElementsByName("name")[0].value;
+        var email = document.getElementsByName("email")[0].value;
+        error = "";
+        if ( name == "" || email == "")
+            error = "All fields are required";
+          if (error != ''){
+            p.innerHTML = error
+            div.removeAttribute("hidden");
+    		return false;
+        }
+        return true;
+    }
+</script>
+{% endblock %}

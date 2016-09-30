@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load rest_framework %}
+{% load staticfiles %}
+
+{% block content %}
+{% if request.user.is_authenticated %}
+<div class="container">
+	<form action="{% url 'home' %}" method="post" onsubmit="return validateForm();" id="form">
+	{% csrf_token %}
+	<div class="alert alert-danger" hidden="hidden" id="div_error">
+	    <a href="{% url 'home' %}" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+	    <p id="error"></p>
+	</div>
+	<div class="col-md-12">
+		<div class="col-md-8 form-group">
+			<label for="code">Editor:</label>
+			<div style="float: right;margin-right: 15px;">
+				<select id="domain" name="domain" class="selectpicker" data-live-search="true">
+					<option disabled="disabled" value="null" {% if ext %}{% else %}selected="selected"{% endif %} >Select Domain</option>
+					<option value="clike|c" {% ifequal 'cs' ext %}selected="selected"{% endifequal %}>C</option>
+					<option value="clike|java" {% ifequal 'java' ext %}selected="selected"{% endifequal %}>Java</option>
+					<option value="javascript|js" {% ifequal 'js' ext %}selected="selected"{% endifequal %}>Javascript</option>
+					<option value="python|py"{% ifequal 'py' ext %}selected="selected"{% endifequal %}>Python</option>
+				</select>
+			</div><!-- <span class="fa fa-arrows-alt fa-2x" style="float: right;padding: 1px 2px 1px 2px;margin-right: 10px;color: #bbbbbb;border: 1px double #bbbbbb;cursor: pointer;"></span>  --><br/><br/>
+			<textarea class="codemirror-textarea form-control" name = "code" id="code" >{% if code %}{{ code }}{% endif %}</textarea>
+		</div>
+		<div class="col-md-4">
+		<div class="col-md-12 form-group">
+			<label for="input">Input:</label>
+			<textarea rows="10" cols="30" name="input_code" id="input" class="form-control">{% if input_code %}{{ input_code }}{% endif %}</textarea><br/>
+		</div>
+		<div class="col-md-12 form-group">
+			<label for="output">Output:</label>
+			<textarea rows="10" cols="30" name="output_code" id="output" class="form-control">{% if output_code %}{{ output_code }}{% endif %}</textarea><br/>
+		</div>
+		<div class="col-md-12">
+			<button type="submit" form="form" value="run" id="run"class="btn btn-default"><span class="fa fa-cog"></span> Run</button>
+			<button type="reset" form="form" value="reset" id="reset" class="btn btn-default"><span class="fa fa-trash"></span> Reset</button>
+		</div>
+		</div>
+	</div>
+	</form>
+</div>
+{% else %}
+<br>
+<div>
+	<img src="{% static 'img/background.jpg' %}" class="img img-responsive image">
+	<div>
+		<h1 style="position: absolute; top: 100px; text-align: center;">Don't have compiler. Be happy. Compile here.<br />Kung Fu Panda</h1>
+	</div>
+	<button style="position: absolute; top: 100px;">hello</button>
+</div>
+<br>
+{% endif %}
+
+<script type="text/javascript">
+	function validateForm(){
+		div = document.getElementById('div_error');
+		p = document.getElementById('error');
+		domain = document.getElementById('domain');
+		value = domain.options[domain.selectedIndex].value;
+		if(value == 'null'){
+			p.innerHTML = "Please, select the domain."
+			div.removeAttribute("hidden");
+			return false;
+		}
+		return true;
+	}
+</script>
+<script type="text/javascript"  src="{% static 'js/default.js' %}" ></script>
+{% endblock %}
